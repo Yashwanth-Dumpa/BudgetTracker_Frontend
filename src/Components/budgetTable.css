@@ -1,0 +1,12 @@
+.lists{
+    list-style-type: none;
+    margin-bottom:10px;
+    width:100%;
+}
+
+.months{
+    font-size:23px;
+    width:40%;
+    font-family:Roboto;
+    font-weight:600;
+}
