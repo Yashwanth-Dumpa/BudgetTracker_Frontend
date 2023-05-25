@@ -1,10 +1,11 @@
-import {useState,useEffect} from 'react';
 
+import { useEffect, useContext} from 'react';
+import { userDetailsContext } from '../Context';
 
 const Dates = ()=>{
 
-   const [inputs,setInput] = useState({});
-   let defaultDate = {from:"2023-04-01", to:"2023-04-30"};
+   const {setData,inputs,setInput,setGraphData,setGraphData1} = useContext(userDetailsContext);
+   let defaultDate = {from:"2023-04-23", to:"2023-05-23"};
    useEffect(()=>{
         setInput(defaultDate);
    },[]);
@@ -18,8 +19,29 @@ const Dates = ()=>{
 
    function display(){
     console.log("Dates",inputs);
-    fetch("http://localhost:5000/?start= & end=");
-   }
+    fetch("http://localhost:5000/?start='"+inputs.from+"'&end='"+inputs.to+"'")
+    .then(response=>response.json())
+    .then(dateJson=>{//line 1
+
+     fetch("http://localhost:5000/expenseTable")
+     .then(()=>{
+          setData(dateJson);
+     })// Datatable URL
+
+     fetch("http://localhost:5000/viewBalance").then(()=>{
+          let arr = [["Expense", "Rupees"]]; //error has 4 columns but should have two.
+                    dateJson.map((each)=>{
+                        return arr.push(Object.values(each))
+                    })
+                    console.log(arr);
+                    setGraphData(arr);
+     })
+
+    })//line 1 closing tag.
+ 
+
+
+   }//Display Function closing bracket.
 
     return(
         <div className='w-75  d-flex justify-content-around'>

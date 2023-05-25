@@ -1,16 +1,23 @@
 import './modal.css'
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect,useContext} from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';      
-import DeleteIcon from '@mui/icons-material/Delete';
+//import DeleteIcon from '@mui/icons-material/Delete';
+
+import { userDetailsContext } from '../Context';
 
 
 function Expense(props){
     let defaultObject = {amount:0,category:"Entertainment",date:"2023-05-23",remarks:"No remarks"};
+
+
+
+    const {setData} = useContext(userDetailsContext);
+    const {setGraphData,setGraphData1} =  useContext(userDetailsContext);
    
     const [inputs,setInput] = useState({});
     useEffect(()=>{
@@ -54,7 +61,39 @@ function notes(){
             }
             console.log("Options", inputs);
             fetch('http://localhost:5000/editExpense/'+props.id,options)
-        
+            .then(()=>{
+                fetch("http://localhost:5000/expenseTable")
+                .then(response=>response.json())
+                .then(jsonData=>{
+                //console.log(jsonData);
+                setData(jsonData);
+                });
+               
+                fetch("http://localhost:5000/viewBalance")
+                .then(response=>response.json())
+                .then(jsonData=>{
+                    //console.log(jsonData);
+                    let arr = [["Expense", "Rupees"]];
+                    jsonData.map((each)=>{
+                        return arr.push(Object.values(each))
+                    })
+                    console.log(arr);
+                    setGraphData(arr);
+                })
+
+                fetch("http://localhost:5000/viewBalance")
+                .then(response=>response.json())
+                .then(jsonData=>{
+                    //console.log(jsonData);
+                    let arr = [["Expense", "Rupees"]];
+                    jsonData.map((each)=>{
+                        return arr.push(Object.values(each))
+                    })
+                    console.log(arr);
+                    setGraphData1(arr);
+                })
+
+            })        
             notes();
         }
     }

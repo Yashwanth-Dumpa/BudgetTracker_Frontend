@@ -15,6 +15,8 @@ import Budget from './Components/budgetTable.js';
 import Expense from './Components/ExpenseTab.js';
 //import {useState} from 'react';
 
+import UserDetailsProvider from './Context.js'
+
 
 function App() {
 
@@ -62,6 +64,7 @@ function App() {
   };
 
   return (
+    <UserDetailsProvider>
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
@@ -71,7 +74,9 @@ function App() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
+        <UserDetailsProvider>
         <Expense/>
+        </UserDetailsProvider>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Budget/>
@@ -80,6 +85,8 @@ function App() {
         <Test/>
       </TabPanel>
     </Box>
+    </UserDetailsProvider>
+
   );
 }
 

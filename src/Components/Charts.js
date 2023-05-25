@@ -2,26 +2,30 @@
 import { Chart } from "react-google-charts";
 import {useState, useEffect,createContext, useContext} from 'react';
 
-const UserContext = createContext();
+import { userDetailsContext } from '../Context';
 
-const Graph = ()=>{
-    var [data,setData] = useState([]);
-  
+//const UserContext = createContext();
+
+/*const Graph = ()=>{
+    const {graphData,setGraphData} =  useContext(userDetailsContext);
+    //var [graphData,setGraphData] = useState([]);
+    setGraphData([['Expense', 'Rupees']])
     useEffect(()=>{
+     
       fetch("http://localhost:5000/viewSpends")
       .then(response=>response.json())
       .then(jsonData=>{
           //console.log(jsonData);
-          let arr = [["Expense", "Rupees"]];
-          jsonData.map((each)=>{
-              return arr.push(Object.values(each))
-          })
-          console.log(arr);
-          setData(arr);
+          
+          //setGraphData([['Expense', 'Rupees']])
+          for(let i=0; i<jsonData.length; i++){
+            graphData.push(Object.values(jsonData[i]))
+          }
+          console.log(graphData)
+          setGraphData(graphData); 
       }).catch((err)=>{
           console.log("Error",err);
       }) ;  
-  
     },[])
     
      const options = {
@@ -45,14 +49,62 @@ const Graph = ()=>{
                       chartType="PieChart"
                       width="100%"
                       height="400px"
-                      data={data}
+                      data={graphData}
+                      options={options}
+                      />    
+              </div>
+        );
+  };*/
+ const Graph = ()=>{
+    //var [data,setData] = useState([]);
+   const {graphData,setGraphData}= useContext(userDetailsContext);
+    useEffect(()=>{
+      fetch("http://localhost:5000/viewBalance")
+      .then(response=>response.json())
+      .then(jsonData=>{
+          //console.log(jsonData);
+          let arr = [["Expense", "Rupees"]];
+          jsonData.map((each)=>{
+              return arr.push(Object.values(each))
+          })
+          console.log(arr);
+          setGraphData(arr);
+      }).catch((err)=>{
+          console.log("Error",err);
+      }) ;  
+  
+    },[])
+    
+     const options = {
+      title:"View Spends",
+      titleTextStyle: {
+          color: "Black",    
+          fontName: "Roboto", 
+          fontSize: 30, 
+          bold: true,    
+          italic: false
+      },
+      pieHole: 0.4,
+      is3D: false,
+      legend:{position:"bottom"},
+      width:"500",
+      height:"400",
+    };
+        return (
+            <div className="d-flex justify-content-center">
+                      <Chart
+                      chartType="PieChart"
+                      width="100%"
+                      height="400px"
+                      data={graphData}
                       options={options}
                       />    
               </div>
         );
   };
   const Graph2 = ()=>{
-      var [data,setData] = useState([]);
+      //var [data,setData] = useState([]);
+      const {graphData1,setGraphData1} = useContext(userDetailsContext);
     
       useEffect(()=>{
         fetch("http://localhost:5000/viewBalance")
@@ -64,7 +116,7 @@ const Graph = ()=>{
                 return arr.push(Object.values(each))
             })
             console.log(arr);
-            setData(arr);
+            setGraphData1(arr);
         }).catch((err)=>{
             console.log("Error",err);
         }) ;  
@@ -87,22 +139,21 @@ const Graph = ()=>{
         height:"400",
       };
           return (
-            <UserContext.Provider value={data}>
               <div className="d-flex justify-content-center">
                         <Chart
                         chartType="PieChart"
                         width="100%"
                         height="400px"
-                        data={data}
+                        data={graphData1}
                         options={options}
                         />    
                 </div>
-            </UserContext.Provider>
           );
     };
 
 
-const Graphs = ()=>{
+const Graphs = (props)=>{
+   
     return(
     <div className="d-flex flex-row justify-content-around ">
         <Graph/>
