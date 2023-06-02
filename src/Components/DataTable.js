@@ -10,7 +10,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-
+import Cookies from 'js-cookie';
 import { userDetailsContext } from '../Context';
 
 
@@ -18,14 +18,29 @@ const DataTable = (props)=>{
    
     /*Printing data continously because of useEffect */ 
    // var [data,setData] = useState([]);
+   const user_id = Cookies.get('user_id');
    const {data,setData,graphData,setGraphData, graphdata1,setGraphData1} = useContext(userDetailsContext);
     useEffect(()=>{
-    fetch("http://localhost:5000/expenseTable")
+    fetch("http://localhost:5000/"+user_id+"/expenseTable")
     .then(response=>response.json())
     .then(jsonData=>{
-        console.log(jsonData);
+        //console.log("Expense Table",jsonData);
+        jsonData.map((each)=>{
+            let ele = each;
+            //console.log(ele['date_and_time']);
+            const date = new Date(ele['date_and_time'])
+            const formattedDate = date.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+            })
+        
+            console.log(formattedDate);
+                ele["date_and_time"] = formattedDate;
+                console.log(each);
+            })
          setData(jsonData);
-    });
+        });
     },[]);
 
     function del(id){
@@ -34,16 +49,30 @@ const DataTable = (props)=>{
             mode:"cors"
         }
         
-        fetch("http://localhost:5000/delete-expense/"+id,options)
+        fetch("http://localhost:5000/"+user_id+"/delete-expense/"+id,options)
         .then(()=>{
-            fetch("http://localhost:5000/expenseTable")
+            fetch("http://localhost:5000/"+user_id+"/expenseTable")
             .then(response=>response.json())
             .then(jsonData=>{
                 //console.log(jsonData);
+                jsonData.map((each)=>{
+                    let ele = each;
+                    //console.log(ele['date_and_time']);
+                    const date = new Date(ele['date_and_time'])
+                    const formattedDate = date.toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                    })
+                
+                    console.log(formattedDate);
+                        ele["date_and_time"] = formattedDate;
+                        console.log(each);
+                    })
                 setData(jsonData);
             });
 
-            fetch("http://localhost:5000/viewBalance")
+            fetch("http://localhost:5000/"+user_id+"/viewSpends")
             .then(response=>response.json())
             .then(jsonData=>{
           //console.log(jsonData);
@@ -55,17 +84,25 @@ const DataTable = (props)=>{
           setGraphData(arr);
       })
 
-      fetch("http://localhost:5000/viewBalance")
-      .then(response=>response.json())
-      .then(jsonData=>{
-          //console.log(jsonData);
-          let arr = [["Expense", "Rupees"]];
-          jsonData.map((each)=>{
-              return arr.push(Object.values(each))
-          })
-          console.log(arr);
-          setGraphData1(arr);
-      })
+      fetch("http://localhost:5000/"+user_id+"/viewBalance")
+        .then(response=>response.json())
+        .then(jsonData=>{
+            console.log(jsonData);
+            let arr = [["Expense", "Rupees"]];
+            /*jsonData.map((each)=>{
+                return arr.push(Object.values(each))
+            })*/
+            console.log("GraphData1",arr);
+            //setGraphData1(arr);
+            //let jsonData = {income:50000,outcome:12000}
+            //Object.keys(jsonData).map((key)=>{arr.push([key,jsonData[key]])});
+            for(let i of jsonData){
+                console.log(i);
+            Object.keys(i).map((key)=>{arr.push([key,i[key]])});
+            }
+            console.log("Graph BAlance",arr);
+            setGraphData1(arr);
+        })
       
         });
     }
@@ -78,17 +115,17 @@ const DataTable = (props)=>{
                     <th>Expense Type</th>
                     <th>Amount</th>
                     <th>Date</th>
-                    <th></th>
+                    <th>Remarks</th>
                     <th></th>
                 </tr>
         
                 {data.map((val, key) => {
                     return (
                         <tr key={key}>
-                            <td>{val.id}</td>
                             <td>{val.category}</td>
                             <td>{val.amount}</td>
                             <td>{val.date_and_time}</td>
+                            <td>{val.remarks}</td>
                             <td><Expense btn="Edit" addBtn="Save Edit" name="Edit Expense" id={val.id}/></td>
                 
                             <td><Popup

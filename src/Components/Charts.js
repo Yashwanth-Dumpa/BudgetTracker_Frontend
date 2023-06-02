@@ -4,6 +4,7 @@ import {useState, useEffect,createContext, useContext} from 'react';
 
 import { userDetailsContext } from '../Context';
 
+import Cookies from 'js-cookie';
 //const UserContext = createContext();
 
 /*const Graph = ()=>{
@@ -56,10 +57,11 @@ import { userDetailsContext } from '../Context';
         );
   };*/
  const Graph = ()=>{
+    const user_id = Cookies.get('user_id');
     //var [data,setData] = useState([]);
    const {graphData,setGraphData}= useContext(userDetailsContext);
     useEffect(()=>{
-      fetch("http://localhost:5000/viewBalance")
+      fetch("http://localhost:5000/"+user_id+"/viewSpends")
       .then(response=>response.json())
       .then(jsonData=>{
           //console.log(jsonData);
@@ -67,7 +69,7 @@ import { userDetailsContext } from '../Context';
           jsonData.map((each)=>{
               return arr.push(Object.values(each))
           })
-          console.log(arr);
+          console.log('Graph Expenses',arr);
           setGraphData(arr);
       }).catch((err)=>{
           console.log("Error",err);
@@ -104,18 +106,27 @@ import { userDetailsContext } from '../Context';
   };
   const Graph2 = ()=>{
       //var [data,setData] = useState([]);
+      const user_id = Cookies.get('user_id');
       const {graphData1,setGraphData1} = useContext(userDetailsContext);
-    
+    // let array = [['Expenses','Rupees'],[100000,45000]];
       useEffect(()=>{
-        fetch("http://localhost:5000/viewBalance")
+        fetch("http://localhost:5000/"+user_id+"/viewBalance")
         .then(response=>response.json())
         .then(jsonData=>{
-            //console.log(jsonData);
+            console.log(jsonData);
             let arr = [["Expense", "Rupees"]];
-            jsonData.map((each)=>{
+            /*jsonData.map((each)=>{
                 return arr.push(Object.values(each))
-            })
-            console.log(arr);
+            })*/
+            console.log("GraphData1",arr);
+            //setGraphData1(arr);
+            //let jsonData = {income:50000,outcome:12000}
+            //Object.keys(jsonData).map((key)=>{arr.push([key,jsonData[key]])});
+            for(let i of jsonData){
+                console.log(i);
+            Object.keys(i).map((key)=>{arr.push([key,i[key]])});
+            }
+            console.log("Graph BAlance",arr);
             setGraphData1(arr);
         }).catch((err)=>{
             console.log("Error",err);

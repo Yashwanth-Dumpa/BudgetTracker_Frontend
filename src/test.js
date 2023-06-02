@@ -1,12 +1,18 @@
 
-import {useEffect, useState} from 'react';
 
+import TextField from '@mui/material/TextField';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';       
+import 'react-toastify/dist/ReactToastify.css';    
+
+import { useNavigate, Link } from "react-router-dom"
+
+import {useState, useEffect,createContext, useContext} from 'react';
+
+import Cookies from 'js-cookie';
 
 
-const Test =()=>{
 
+const Test =(props)=>{
     function trial(){
         alert("Inside");
     }
@@ -16,6 +22,10 @@ const Test =()=>{
             position: toast.POSITION.TOP_RIGHT
         });
         
+    }
+
+    function log(){
+        Cookies.remove('user_id');
     }
    const [inputs,setInput] = useState({});
    let trialobject = {june: 'Hello June', april: 'Hi April', may: 'Hi May', date: '2023-05-04', category: 'Groceries'};
@@ -49,12 +59,16 @@ const Test =()=>{
             method:'GET',
             mode:"cors"
         }
-        fetch("http://localhost:5000/expenseTable")
+        console.log(props);
+        fetch("http://localhost:5000/"+21+"/expenseTable")
         .then(response=>response.json())
         .then(data=>{
             console.log(data);
+           console.log( 'Cookies', Cookies.get('user_id'));
         })
     }
+
+
 
     return(
     <>
@@ -63,6 +77,8 @@ const Test =()=>{
         <input type='text'  name='april' value={inputs.april||2} onChange={set}/>
         <input type='text' name='may' value={inputs.may||3}  onChange={set}/>
         <input type='date' name='date' value={inputs.date}  onChange={set}/>
+
+        <TextField label="Fisrt NAme" required/>
         <select id='options' name='category' value={inputs.category||"Groceries"} onChange={set}>
                                 <option>Groceries</option>
                                 <option>Rent</option>
@@ -76,7 +92,16 @@ const Test =()=>{
         <button onClick={getDetails}>Get Details</button>
         <button onClick={notes}>Show toast Notification</button>
         <button onClick={trial}>Show trial</button>
+
+        <button onClick={log}>LogOUT</button>
+
         <ToastContainer/>
+
+       
+        <Link to='/signUp'>Sign Up</Link>
+
+       
+
      
     </>   
 

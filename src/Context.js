@@ -11,7 +11,6 @@ const UserDetailsProvider = (props) => {
     const [data,setData] = useState([]);
 
     const [inputs,setInput] = useState({}); //Dates Object
-
     const [graphData,setGraphData] = useState([["Expense", "Rupees"]]);
     const [graphData1,setGraphData1] = useState([["Expense", "Rupees"]]);
 

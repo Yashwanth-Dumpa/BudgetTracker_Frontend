@@ -14,8 +14,14 @@ import Test from './test.js';
 import Budget from './Components/budgetTable.js';
 import Expense from './Components/ExpenseTab.js';
 //import {useState} from 'react';
+import SignUp from './signUp.js';
+import {Login} from './login.js';
+
+import MainPage from './mainPage.js';
 
 import UserDetailsProvider from './Context.js'
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 function App() {
@@ -64,28 +70,34 @@ function App() {
   };
 
   return (
-    <UserDetailsProvider>
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-          <Tab label="Expenses" {...a11yProps(0)} />
-          <Tab label="Budget" {...a11yProps(1)} />
-          <Tab label="Test" {...a11yProps(2)} />
-        </Tabs>
+    <Router>
+    <Routes>
+        <Route path='/' element={<MainPage/>}></Route>
+        <Route path='/signUp' element={<SignUp/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/home' element={<UserDetailsProvider>
+      
+      <Box sx={{ width: '100%' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
+            <Tab label="Expenses" {...a11yProps(0)} />
+            <Tab label="Budget" {...a11yProps(1)} />
+            
+          </Tabs>
+        </Box>
+        <TabPanel value={value} index={0}>
+          <UserDetailsProvider>
+          <Expense/>
+          </UserDetailsProvider>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Budget/>
+        </TabPanel>
       </Box>
-      <TabPanel value={value} index={0}>
-        <UserDetailsProvider>
-        <Expense/>
-        </UserDetailsProvider>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Budget/>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <Test/>
-      </TabPanel>
-    </Box>
-    </UserDetailsProvider>
+        </UserDetailsProvider>}/>
+    </Routes>
+  </Router>
+    
 
   );
 }

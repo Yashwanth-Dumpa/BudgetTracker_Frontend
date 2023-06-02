@@ -1,0 +1,24 @@
+
+.img-container{
+    background-image: url('bt2.webp');
+    background-size:cover;
+    width:100vw;
+    height:100vh;
+    padding:20px;
+}
+
+.button-style{
+    color:black;
+    font-size: 20px;
+    font-weight:500;
+    width:100px;
+   padding:10px;
+   border-radius:20px;
+}
+
+.heading-container{
+    display:flex;
+    align-items:center;
+    height:80vh;
+
+}
