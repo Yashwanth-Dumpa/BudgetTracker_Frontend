@@ -75,6 +75,7 @@ function App() {
         <Route path='/' element={<MainPage/>}></Route>
         <Route path='/signUp' element={<SignUp/>}/>
         <Route path='/login' element={<Login/>}/>
+        <Route path='/test' element={<Test/>}/>
         <Route path='/home' element={<UserDetailsProvider>
       
       <Box sx={{ width: '100%' }}>
