@@ -2,12 +2,17 @@ import TextField from "@mui/material/TextField";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import * as React from 'react';
+import Popover from '@mui/material/Popover';
+import Typography from '@mui/material/Typography';
+
 import { useNavigate, Link } from "react-router-dom";
 
 import { useState, useEffect, createContext, useContext } from "react";
 
 import Cookies from "js-cookie";
 
+import InfoIcon from '@mui/icons-material/Info';
 //-----------------------------------------------
 
 import FilledInput from "@mui/material/FilledInput";
@@ -125,18 +130,69 @@ const Test = (props) => {
  
 const err = false;
  const name='Hello';
-  return (
-    <div className="d-flex flex-column justify-content-center m-5 w-50 ">
-      <h1>Hello this is validation Tests</h1>
-      <TextField required 
-          id="outlined-required"
-          label="Required"
-          defaultValue="Normal"/>
-          
 
-      <Controlled name = {name} errorVal={err}/>
-      
+
+ //-------------------------------------------------------------
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+ 
+  const open = Boolean(anchorEl);
+  return (
+    <>
+    <div className="d-flex flex-column justify-content-center w-50 ">
+      <div>
+      <Typography className="w-50"
+        aria-owns={open ? 'mouse-over-popover' : undefined}
+        aria-haspopup="true"
+        onMouseEnter={handlePopoverOpen}
+        onMouseLeave={handlePopoverClose}
+      >
+         <InfoIcon/>
+      </Typography>
+      <Popover
+        id="mouse-over-popover"
+        sx={{
+          pointerEvents: 'none',
+        }}
+        open={open}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        onClose={handlePopoverClose}
+        disableRestoreFocus
+      >
+        <Typography className="bg-info" sx={{ p: 1,maxWidth:350}}>This Pie Chart represents two Slices, 
+        one for Expenses and the other for Balance amount. The sum of these two slices will give your Total Income. 
+        </Typography>
+      </Popover>
     </div>
+     
+    </div>
+    <div>
+      <button onClick={()=>{
+        fetch("http://localhost:5000/55/getBudget/balance")
+        .then(response=>response.json())
+        .then((data)=>{
+          console.log(data);
+        });
+        console.log('Cliked');
+      }}>Click Me</button>
+    </div>
+    </>
   );
 };
 

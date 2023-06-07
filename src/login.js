@@ -69,14 +69,14 @@ const [text,setText] = useState('');
           if (data) {
             console.log(data[0].id);
             Cookies.set("user_id", data[0].id);
-            navigate("/home", { replace: false });
+            navigate("/home", { replace: true });
           } else {
-            toast.error("Account doesn't exist. Please sign up. ", {
+            toast.warning("Invalid user details. Please check the mail Id and Password you have entered", {
               position: toast.POSITION.TOP_RIGHT,
             });
-            setTimeout(() => {
+            /*setTimeout(() => {
               navigate("/signUp", { replace: false });
-            }, 5000);
+            }, 5000);*/
 
             /*navigate('/signUp',{replace:false});
           console.log("Signup page and toast");*/

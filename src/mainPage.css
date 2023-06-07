@@ -13,12 +13,26 @@
     font-weight:500;
     width:100px;
    padding:10px;
-   border-radius:20px;
+   border-radius:5px;
 }
 
 .heading-container{
     display:flex;
     align-items:center;
+    justify-content:center;
     height:80vh;
 
+}
+
+.heading{
+    color:whitesmoke;
+    font-family:'Times New Roman','Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight:600;
+    font-size:40px;
+}
+
+.para{
+    font-size:18px;
+    font-family:'Times New Roman', Times, serif;
+    color:rgb(183, 183, 9);
 }

@@ -2,6 +2,8 @@ import React from 'react';
 import DataTable from './DataTable.js';
 import Graphs from './Charts.js';
 import Dates from './Dates.js';
+import './expensebg.css'
+
 //import {useState, useEffect,createContext, useContext} from 'react';
 
 const Expense = ()=>{

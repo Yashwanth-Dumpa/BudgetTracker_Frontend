@@ -2,9 +2,12 @@
 import { Chart } from "react-google-charts";
 import {useState, useEffect,createContext, useContext} from 'react';
 
+import Test from '../test.js';
 import { userDetailsContext } from '../Context';
 
 import Cookies from 'js-cookie';
+
+import InfoIcon from '@mui/icons-material/Info';
 //const UserContext = createContext();
 
 /*const Graph = ()=>{
@@ -153,10 +156,11 @@ import Cookies from 'js-cookie';
               <div className="d-flex justify-content-center">
                         <Chart
                         chartType="PieChart"
-                        width="100%"
+                        width="50%"
                         height="400px"
                         data={graphData1}
                         options={options}
+                        
                         />    
                 </div>
           );

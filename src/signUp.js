@@ -85,6 +85,8 @@ const SignUp = () => {
             toast.success("Account created successfully. Please login. ", {
               position: toast.POSITION.TOP_RIGHT,
             });
+            console.log('Signup data',data.insertId);
+            fetch("http://localhost:5000/insertBudget/"+data.insertId);
             setTimeout(() => {
               navigate("/login", { replace: false });
             }, 5000);
