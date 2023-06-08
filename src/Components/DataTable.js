@@ -9,12 +9,13 @@ import React from "react";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { red } from '@mui/material/colors';
+import { red } from "@mui/material/colors";
 
 import Cookies from "js-cookie";
 import { userDetailsContext } from "../Context";
 
 //----------------Table Imports
+import TablePagination from "@mui/material/TablePagination";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -122,7 +123,7 @@ const DataTable = (props) => {
     });
   }
 
-  //--------------------------------------------------------------
+  //--------------------For Table------------------------------------------
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -143,8 +144,18 @@ const DataTable = (props) => {
       border: 0,
     },
   }));
+  //------------------------------------For Pagination------------------------
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   return (
     <>
@@ -219,85 +230,110 @@ const DataTable = (props) => {
       </table>
     </div>*/}
       <div className="d-flex justify-content-center">
-        <TableContainer
-          className="d-flex justify-content-center "
-        >
-          <Table sx={{ maxWidth: 1200 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>S. No</StyledTableCell>
-                <StyledTableCell align="center">Category</StyledTableCell>
-                <StyledTableCell align="right">Amount</StyledTableCell>
-                <StyledTableCell align="right">Date</StyledTableCell>
-                <StyledTableCell align="right">Remarks</StyledTableCell>
-                <StyledTableCell align="right"></StyledTableCell>
-                <StyledTableCell align="right"></StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((val, key) => (
-                <StyledTableRow key={key}>
-                  <StyledTableCell component="th" scope="row">
-                    {key + 1}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {val.category}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{val.amount}</StyledTableCell>
-                  <StyledTableCell align="right">
-                    {val.date_and_time}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{val.remarks}</StyledTableCell>
-                  <StyledTableCell align="right">
-                    <Expense
-                      btn="Edit"
-                      addBtn="Save Edit"
-                      name="Edit Expense"
-                      id={val.id}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell align="right"><Popup trigger={<DeleteIcon sx={{ color: red[500] }} />} modal nested>
-                  {(close) => (
-                    <div className="p-4">
-                      <button className="close" onClick={close}>
-                        &times;
-                      </button>
+        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+          <TableContainer sx={{ maxHeight: 300 }}>
+            {/*aria-label="customized table"*/}
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>S. No</StyledTableCell>
+                  <StyledTableCell align="center">Category</StyledTableCell>
+                  <StyledTableCell align="right">Amount</StyledTableCell>
+                  <StyledTableCell align="right">Date</StyledTableCell>
+                  <StyledTableCell align="right">Remarks</StyledTableCell>
+                  <StyledTableCell align="right"></StyledTableCell>
+                  <StyledTableCell align="right"></StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((val, key) => (
+                    <StyledTableRow key={key}>
+                      <StyledTableCell component="th" scope="row">
+                        {key + 1}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {val.category}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {val.amount}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {val.date_and_time}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {val.remarks === "undefined" ? "-" : val.remarks}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        <Expense
+                          btn="Edit"
+                          addBtn="Save Edit"
+                          name="Edit Expense"
+                          id={val.id}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        <Popup
+                          trigger={<DeleteIcon sx={{ color: red[500] }} />}
+                          modal
+                          nested
+                        >
+                          {(close) => (
+                            <div className="p-4">
+                              <button className="close" onClick={close}>
+                                &times;
+                              </button>
 
-                      <div className="text-center">
-                        <p>Are you sure you want to delete it? Once deleted it cannot be restored.</p>
-                      </div>
-                      <div className="d-flex justify-content-center">
-                        <div className="d-flex justify-content-around w-50">
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={() => {
-                              del(val.id);
-                              close();
-                            }}
-                          >
-                            Yes
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={() => {
-                              console.log("modal closed ");
-                              close();
-                            }}
-                          >
-                            No
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </Popup></StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                              <div className="text-center">
+                                <p>
+                                  Are you sure you want to delete it? Once
+                                  deleted it cannot be restored.
+                                </p>
+                              </div>
+                              <div className="d-flex justify-content-center">
+                                <div className="d-flex justify-content-around w-50">
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={() => {
+                                      del(val.id);
+                                      close();
+                                    }}
+                                  >
+                                    Yes
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={() => {
+                                      console.log("modal closed ");
+                                      close();
+                                    }}
+                                  >
+                                    No
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </Popup>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 15, 25, 100]}
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
       </div>
     </>
   );

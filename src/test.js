@@ -1,11 +1,20 @@
 import TextField from "@mui/material/TextField";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import InputAdornment from "@mui/material/InputAdornment";
 import * as React from 'react';
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 
+
+
+
+
+//-----------------
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+//-----------------
 import { useNavigate, Link } from "react-router-dom";
 
 import { useState, useEffect, createContext, useContext } from "react";
@@ -145,6 +154,14 @@ const err = false;
   };
  
   const open = Boolean(anchorEl);
+
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const [showPassword, setShowPassword] = React.useState(false);
   return (
     <>
     <div className="d-flex flex-column justify-content-center w-50 ">
@@ -183,14 +200,13 @@ const err = false;
      
     </div>
     <div>
-      <button onClick={()=>{
-        fetch("http://localhost:5000/55/getBudget/balance")
-        .then(response=>response.json())
-        .then((data)=>{
-          console.log(data);
-        });
-        console.log('Cliked');
-      }}>Click Me</button>
+        <button onClick={()=>{
+          fetch("http://localhost:5000/"+55+"/viewSpendsMonth/?start=May")
+          .then(response=>response.json())
+          .then(data=>{
+            console.log(data);
+          })
+        }}>Click me</button>
     </div>
     </>
   );

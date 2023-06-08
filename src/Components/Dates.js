@@ -35,6 +35,7 @@ const Dates = () => {
       .then((response) => response.json())
       .then((dateJson) => {
         //line 1
+        console.log(dateJson,'DateJSON OBJECT FROM SEARCH');
 
         fetch("http://localhost:5000/" + user_id + "/expenseTable").then(() => {
           dateJson.map((each) => {
@@ -54,10 +55,13 @@ const Dates = () => {
           setData(dateJson);
         }); // Datatable URL
 
-        fetch("http://localhost:5000/" + user_id + "/viewBalance").then(() => {
-          let arr = [["Expense", "Rupees"]]; //error has 4 columns but should have two.
-          dateJson.map((each) => {
-            return arr.push(Object.values(each));
+        fetch("http://localhost:5000/" + user_id + "/viewSpendsDates/?start='" +inputs.from +"'&end='" +inputs.to +"'")
+        .then(response=>response.json())        
+        .then((data) => {
+          let arr = [["Expense", "Rupees"]]; //Error: has 4 columns but should have two.
+          data.map((each) => {
+             arr.push([each.category,each.amount]);
+             return arr;
           });
           console.log(arr);
           setGraphData(arr);

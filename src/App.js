@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 //import Tab from "@material-ui/core/Tab";
 
+import CollapsibleTable from "./Components/muiTablesTrial";
 import Test from "./test.js";
 import Budget from "./Components/budgetTable.js";
 import Expense from "./Components/ExpenseTab.js";
@@ -72,6 +73,7 @@ function App() {
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/test" element={<Test />} />
+        <Route path="/table" element={<CollapsibleTable/>} />
         <Route
           path="/home"
           element={

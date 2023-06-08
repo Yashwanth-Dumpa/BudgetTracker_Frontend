@@ -5,53 +5,66 @@ import "./signUp.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import validator from 'validator';
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+
+import validator from "validator";
 
 import Cookies from "js-cookie";
 
 export const Login = () => {
   const navigate = useNavigate();
 
-  const [Perr,setPErr] = useState(false);
-  const [Merr,setMErr] = useState(false);
-const [text,setText] = useState('');
- const [mailText, setMail] = useState("");
+  const [Perr, setPErr] = useState(false);
+  const [Merr, setMErr] = useState(false);
+  const [text, setText] = useState("");
+  const [mailText, setMail] = useState("");
 
   const [loginDetails, setLoginDetails] = useState({});
+
+  //For password hide and show symbol
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const [showPassword, setShowPassword] = useState(false);
 
   const set = (event) => {
     const name = event.target.name;
     const value = event.target.value;
 
-    if(name==='mail'){
-     // if(!(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value))){ //Without using Validator module
-      if(!validator.isEmail(value)){ 
+    if (name === "mail") {
+      // if(!(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value))){ //Without using Validator module
+      if (!validator.isEmail(value)) {
         setMail("Please enter valid mail address");
         setMErr(true);
-      }else{
+      } else {
         setMail("");
         setMErr(false);
       }
-      
-    } else if(name==='password'){
-      if(value!==""){
+    } else if (name === "password") {
+      if (value !== "") {
         setPErr(false);
         setText("");
       }
-
     }
     setLoginDetails((vals) => ({ ...vals, [name]: value }));
   };
 
   function login() {
-    if (loginDetails.mail === ""||loginDetails.mail===undefined) {
+    if (loginDetails.mail === "" || loginDetails.mail === undefined) {
       setMail("Please Enter E-mail");
       setMErr(true);
-    } else if(!validator.isEmail(loginDetails.mail)){
+    } else if (!validator.isEmail(loginDetails.mail)) {
       setMail("Please enter valid mail address");
-        setMErr(true);
-
-    }else if (loginDetails.password === ""||loginDetails.password===undefined) {
+      setMErr(true);
+    } else if (
+      loginDetails.password === "" ||
+      loginDetails.password === undefined
+    ) {
       setText("Please Enter Password");
       setPErr(true);
     } else {
@@ -71,9 +84,12 @@ const [text,setText] = useState('');
             Cookies.set("user_id", data[0].id);
             navigate("/home", { replace: true });
           } else {
-            toast.warning("Invalid user details. Please check the mail Id and Password you have entered", {
-              position: toast.POSITION.TOP_RIGHT,
-            });
+            toast.warning(
+              "Invalid user details. Please check the mail Id and Password you have entered",
+              {
+                position: toast.POSITION.TOP_RIGHT,
+              }
+            );
             /*setTimeout(() => {
               navigate("/signUp", { replace: false });
             }, 5000);*/
@@ -85,8 +101,7 @@ const [text,setText] = useState('');
     }
   }
 
-
- // var err=false;
+  // var err=false;
 
   return (
     <div className="i-container bg-success bg-gradient">
@@ -101,21 +116,20 @@ const [text,setText] = useState('');
             value={loginDetails.mail}
             onChange={set}
             required
-            error={Merr} helperText={mailText}
-            onBlur = {()=>{
-              console.log(loginDetails.mail)// fro debugging puposes
-              if(loginDetails.mail ===undefined || loginDetails.mail===''){
-                  setMErr(true);
-                  setMail("Please Enter E-mail");
-              }else if(!validator.isEmail(loginDetails.mail)){
+            error={Merr}
+            helperText={mailText}
+            onBlur={() => {
+              console.log(loginDetails.mail); // fro debugging puposes
+              if (loginDetails.mail === undefined || loginDetails.mail === "") {
+                setMErr(true);
+                setMail("Please Enter E-mail");
+              } else if (!validator.isEmail(loginDetails.mail)) {
                 setMail("Please enter valid mail address");
                 setMErr(true);
-              }
-              else{
+              } else {
                 setMErr(false);
-                  setMail("");
+                setMail("");
               }
-         
             }}
           />
           <TextField
@@ -126,20 +140,36 @@ const [text,setText] = useState('');
             value={loginDetails.password}
             onChange={set}
             required
-            type="password"
-            error={Perr} helperText={text}
-            onBlur = {()=>{
-              console.log(loginDetails.password)// fro debugging puposes
-              if(loginDetails.password ===undefined || loginDetails.password===''){
-                  setPErr(true);
-                  setText("Please Enter Password");
-              }else{
-                setPErr(false);
-                  setText("");
-              }
-         
+            error={Perr}
+            helperText={text}
+            type={showPassword ? "text" : "password"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>{" "}
+                </InputAdornment>
+              ),
             }}
-
+            onBlur={() => {
+              console.log(loginDetails.password); // fro debugging puposes
+              if (
+                loginDetails.password === undefined ||
+                loginDetails.password === ""
+              ) {
+                setPErr(true);
+                setText("Please Enter Password");
+              } else {
+                setPErr(false);
+                setText("");
+              }
+            }}
           />
         </div>
         <div className="d-flex flex-column">
