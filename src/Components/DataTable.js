@@ -32,7 +32,21 @@ const DataTable = (props) => {
   const user_id = Cookies.get("user_id");
   const { data, setData, graphData, setGraphData, graphdata1, setGraphData1 } =
     useContext(userDetailsContext);
+    const {budget_balance,setBalance} = useContext(userDetailsContext);
+    
   useEffect(() => {
+   /* console.log('Table Data fromDataTabletable.js userContext',monthlyBudget);
+for (let i of months){
+    fetch("http://localhost:5000/"+user_id+"/viewSpendsMonth/?start="+i)
+    .then(response=>response.json())
+    .then(data=>{
+      console.log(data);
+      setMonthlyBudget((vals)=>[...vals,data]);
+    })
+  }
+  console.log('Table Data fromDataTabletable.js userContext',monthlyBudget);*/
+
+
     fetch("http://localhost:5000/" + user_id + "/expenseTable")
       .then((response) => response.json())
       .then((jsonData) => {
@@ -65,6 +79,15 @@ const DataTable = (props) => {
       "http://localhost:5000/" + user_id + "/delete-expense/" + id,
       options
     ).then(() => {
+
+      fetch("http://localhost:5000/"+user_id+"/getBudget/spends")
+      .then(response=>response.json())
+      .then((data)=>{
+        console.log(data);
+        setBalance(data);
+      });
+      
+
       fetch("http://localhost:5000/" + user_id + "/expenseTable")
         .then((response) => response.json())
         .then((jsonData) => {
@@ -146,7 +169,7 @@ const DataTable = (props) => {
   }));
   //------------------------------------For Pagination------------------------
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

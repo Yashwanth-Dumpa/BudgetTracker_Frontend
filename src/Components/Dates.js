@@ -1,7 +1,7 @@
 import { useEffect, useContext } from "react";
 import { userDetailsContext } from "../Context";
 import Cookies from "js-cookie";
-
+import Expense from "./ExpenseButton.js";
 import Logout from "../logout";
 
 import Test from "../test.js";
@@ -101,7 +101,6 @@ const Dates = () => {
       </button>
     </div>
     <div className='d-flex'>
-    <Test/>
     <Logout/>
     </div>
     </div>

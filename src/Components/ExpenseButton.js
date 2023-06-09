@@ -75,7 +75,65 @@ function Expense(props) {
         console.log("Options", inputs);
         fetch("http://localhost:5000/" + user_id + "/addExpense", options)
         .then(()=>{ //Rendering the balance column in Budget tab
-          fetch("http://localhost:5000/"+user_id+"/getBudget/balance")
+
+          fetch("http://localhost:5000/" + user_id + "/expenseTable")
+          .then((response) => response.json())
+          .then((jsonData) => {
+            //console.log(jsonData);
+            jsonData.map((each) => {
+              let ele = each;
+  
+              //console.log(ele['date_and_time']);
+              const date = new Date(ele["date_and_time"]);
+              const formattedDate = date.toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              });
+  
+              console.log(formattedDate);
+              ele["date_and_time"] = formattedDate;
+              console.log(each);
+            });
+            setData(jsonData);
+          });
+          
+
+          
+
+          fetch("http://localhost:5000/" + user_id + "/viewSpends")
+            .then((response) => response.json())
+            .then((jsonData) => {
+              //console.log(jsonData);
+              let arr = [["Expense", "Rupees"]];
+              jsonData.map((each) => {
+                return arr.push(Object.values(each));
+              });
+              console.log(arr);
+              setGraphData(arr);
+            });
+            fetch("http://localhost:5000/" + user_id + "/viewBalance")
+            .then((response) => response.json())
+            .then((jsonData) => {
+              console.log(jsonData);
+              let arr = [["Expense", "Rupees"]];
+              /*jsonData.map((each)=>{
+                  return arr.push(Object.values(each))
+              })*/
+              console.log("GraphData1", arr);
+              //setGraphData1(arr);
+              //let jsonData = {income:50000,outcome:12000}
+              //Object.keys(jsonData).map((key)=>{arr.push([key,jsonData[key]])});
+              for (let i of jsonData) {
+                console.log(i);
+                Object.keys(i).map((key) => {
+                  arr.push([key, i[key]]);
+                });
+              }
+              console.log("Graph BAlance", arr);
+              setGraphData1(arr);
+            });
+        fetch("http://localhost:5000/"+user_id+"/getBudget/spends")
         .then(response=>response.json())
         .then((data)=>{
           console.log(data);
@@ -171,7 +229,7 @@ function Expense(props) {
   return (
     <Popup
       trigger={
-        <button type="button" className="button">
+        <button type="button" className="btn btn-primary">
           {props.btn}
         </button>
       }
@@ -314,9 +372,10 @@ function Expense(props) {
               >
                 {props.addBtn}
               </button>
-              <ToastContainer />
+              
             
           </div>
+          <ToastContainer />
         </div>
       )}
     </Popup>

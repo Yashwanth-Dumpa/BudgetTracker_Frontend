@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useContext } from "react";
 import { userDetailsContext } from "../Context";
 import "./budgetTable.css";
@@ -12,37 +11,26 @@ import Cookies from "js-cookie";
 import { TextField } from "@mui/material";
 
 //-----------------------------------------------------
-
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-
-
-
-
-
-
-
-
-
-
-
+import { tableCellClasses } from "@mui/material/TableCell";
+import { styled } from "@mui/material/styles";
+import * as React from "react";
+import PropTypes from "prop-types";
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { red } from "@mui/material/colors";
 
 const Budget = () => {
-
-
   const months = [
     "April",
     "May",
@@ -62,8 +50,9 @@ const Budget = () => {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
     //const { data, setData} = useContext(userDetailsContext);
-  
-   {/* const data = [{category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"},
+
+    {
+      /* const data = [{category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"},
     {category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"},
     {category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"},
     {category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"},
@@ -82,11 +71,12 @@ const Budget = () => {
     {category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"},
     {category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"},
     {category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"},
-  {category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"}]*/}
-  
-    return ( 
-        <>
-        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+  {category:"Trial",amount:15000,date_and_time:"25 Mar 120",remarks:"undefined"}]*/
+    }
+
+    return (
+      <>
+        <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
           <TableCell>
             <IconButton
               aria-label="expand row"
@@ -99,23 +89,31 @@ const Budget = () => {
           <TableCell component="th" scope="row">
             {row.month}
           </TableCell>
-          <TableCell><TextField sx={{border:0}}
-                      variant="outlined" 
-                      id="outlined-start-adornment"
-                      className="mr-4 ml-4 mb-4 border-0"
-                      name={row.month} type='number'
-                      value={budget_input[row.month]}
-                      onChange={set}
-                    /></TableCell>
+          <TableCell>
+            <TextField
+              sx={{ border: 0 }}
+              variant="outlined"
+              id="outlined-start-adornment"
+              className="mr-4 ml-4 mb-4 border-0"
+              name={row.month}
+              type="number"
+              value={budget_input[row.month]}
+              onChange={set}
+            />
+          </TableCell>
           <TableCell align="right">{row.salary}</TableCell>
-          <TableCell align="right">{row.balance===null?row.salary:row.balance}</TableCell>
-          <TableCell align="right">{row.balance===null?0:row.spends}</TableCell>
+          <TableCell align="right">
+            {row.balance === null ? row.salary : row.balance}
+          </TableCell>
+          <TableCell align="right">
+            {row.balance === null ? 0 : row.spends}
+          </TableCell>
         </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
+                <Typography variant="h6" gutterBottom component="div">
                   History
                 </Typography>
                 <Table size="small" aria-label="purchases">
@@ -135,8 +133,6 @@ const Budget = () => {
                         </TableCell>
                         <TableCell>{historyRow.customerId}</TableCell>
                         <TableCell>{historyRow.amount}</TableCell>
-              
-                      
                       </TableRow>
                     ))}
                   </TableBody>
@@ -145,61 +141,68 @@ const Budget = () => {
             </Collapse>
           </TableCell>
         </TableRow>
-        </>
-      
+      </>
     );
   }
-  
 
-
-//-------------------------------------------------------
-
+  //-------------------------------------------------------
 
   const user_id = Cookies.get("user_id");
   console.log(user_id, "In BudgetTable.js Budget cmponent ");
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(undefined);
 
+  const [tableData, setTableData] = useState([]);
+  const [monthlyBudget, setMonthlyBudget] = useState([]);
+  const [budget_input, setBudget] = useState({});
 
   //const { data, setData} = useContext(userDetailsContext); //To filll monthly wise details.
-  const [budget_input, setBudget] = useState({});
-  const {budget_balance,setBalance} = useContext(userDetailsContext);//rendering in expensebutton.js when Add expense button is clicked.
-  function createData(month, salary, balance,monthly_data) {
+
+  const { budget_balance, setBalance } = useContext(userDetailsContext); //rendering in expensebutton.js when Add expense button is clicked.
+  function createData(month, salary, spends, monthly_data) {
     return {
-      month, salary, balance, spends:salary-balance,
-      history: [
-        {
-          date: '2020-01-05',
-          customerId: '11091700',
-          amount: 3,
-        },
-        {
-          date: '2020-01-02',
-          customerId: 'Anonymous',
-          amount: 1,
-        },
-      ]/*history:monthly_data*/
+      month,
+      salary,
+      spends,
+      history: monthly_data, //Array of Objects
     };
   }
-  
-const tableData = [];
-  for(let i of months){
-    /*fetch("http://localhost/"+user_id+"/viewSpends/"+i)
-    .then((response)=>response.json())
-    .then((monthly_budget)=>{
-      tableData.push(createData(i,budget_input[i],budget_balance[i]));
-    });*/
-   /* fetch("http://localhost:5000/"+user_id+"/viewSpendsMonth/?start="+i)
+
+  //const tableData = [];
+
+  /*for(let i of months){
+    /*fetch("http://localhost:5000/"+user_id+"/viewSpendsMonth/?start="+i)
           .then(response=>response.json())
           .then(data=>{
             console.log("Monthly budget API call",data);
             tableData.push(createData(i,budget_input[i],budget_balance[i]),data);
-          })*/
-          tableData.push(createData(i,budget_input[i],budget_balance[i]));
-     
-  }
-console.log('Table Data from budget table.js',tableData);
+          })        // tableData.push(createData(i,budget_input[i],budget_balance[i],monthlyBudget));  
+  }*/
 
-  
+  console.log("Table Data from budget table.js", tableData);
+  console.log("MOnthly budget use effect", monthlyBudget);
+
+  //---------------------------For table styling---------------------------------------------------
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    "&:last-child td, &:last-child th": {
+      border: 0,
+    },
+  }));
+
+  //----------------------------------------------------------------------------------
 
   const set = (event) => {
     const name = event.target.name;
@@ -217,14 +220,47 @@ console.log('Table Data from budget table.js',tableData);
           budget_obj[Object.values(i)[0]] = Object.values(i)[1];
         }
         setBudget(budget_obj);
-
-        fetch("http://localhost:5000/"+user_id+"/getBudget/balance")
+        //Write an api for balance set
+        /*fetch("http://localhost:5000/"+user_id+"/getBudget/spends")
         .then(response=>response.json())
         .then((data)=>{
           console.log(data);
           setBalance(data);
-        });
+        });*/
       });
+
+    fetch("http://localhost:5000/" + user_id + "/getBudget/spends")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setBalance(data);
+      });
+
+    for (let i of months) {
+      fetch("http://localhost:5000/" + user_id + "/viewSpendsMonth/?start=" + i)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          data.map((each) => {
+            let ele = each;
+            //console.log(ele['date_and_time']);
+            const date = new Date(ele["date_and_time"]);
+            const formattedDate = date.toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            });
+            ele["date_and_time"] = formattedDate;
+          });
+          //tableData.push(createData(i,budget_input[i],budget_balance[i],data));
+          setMonthlyBudget(data);
+          setTableData((vals) => [
+            ...vals,
+            createData(i, budget_input[i], budget_balance[i], data),
+          ]);
+          //tableData.push(createData(i,budget_input[i],budget_balance[i],data));
+        });
+    }
   }, []);
 
   const save = () => {
@@ -242,9 +278,9 @@ console.log('Table Data from budget table.js',tableData);
       "http://localhost:5000/" + user_id + "/addExpense-Credit",
       options
     ).then(() => {
-      fetch("http://localhost:5000/"+user_id+"/getBudget/balance")
-        .then(response=>response.json())
-        .then((data)=>{
+      fetch("http://localhost:5000/" + user_id + "/getBudget/spends")
+        .then((response) => response.json())
+        .then((data) => {
           console.log(data);
           setBalance(data);
         });
@@ -254,188 +290,173 @@ console.log('Table Data from budget table.js',tableData);
     });
   };
 
-
-
   return (
     <div>
-    <div className="w-100 bg-warning p-4">
-      <div className="d-flex flex-row justify-content-between w-100">
-        <h1>Enter Budget</h1>
-        <Expense btn="Enter Expenses" addBtn="Add Expense" name="Add Expense" />
-      </div>
-      {<div className="d-flex flex-row justify-content-center">
-        <ul>
-          {months.map((month) => {
-            return (
-              <li className="lists">
-                <div>
-                  <TextField
-                    variant="outlined" 
-                    id="outlined-start-adornment"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">Rs. </InputAdornment>
-                      ),
-                    }}
-                    className="mr-4 ml-4 mb-4"
-                    label={month}
-                    name={month} type='number'
-                    value={budget_input[month]}
-                    onChange={set}
-                  />
-                  <TextField
-                    id="outlined-start-adornment" disabled
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">Rs. </InputAdornment>
-                      ), 
-                    }} value={budget_balance[month]===null?budget_input[month]:budget_balance[month]}
-                  />
-                </div>
-                {/*<div>
-                <label htmlFor={month} className="pr-5 months">
-                  {month}
-                </label>
-                <input
-                  type="number"
-                  id={month}
-                  name={month}
-                  value={budget_input[month]}
-                  onChange={set} defaultValue='0'
-                />
-              </div>*/}
-              </li>
-            );
-          })}
-        </ul>
-      </div>}
-      {/*<div className="d-flex flex-row justify-content-center">
-    
-          
-          {months.map((month) => {
-            return (
-              <li className="lists">
-                <div>
-                  <TextField
-                    variant="outlined"
-                    id="outlined-start-adornment"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">Rs. </InputAdornment>
-                      ),
-                    }}
-                    className="mr-4 ml-4 mb-4"
-                    label={month}
-                    name={month} type='number'
-                    value={budget_input[month]}
-                    onChange={set}
-                  />
-                  <TextField
-                    id="outlined-start-adornment" disabled
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">Rs. </InputAdornment>
-                      ), 
-                    }} value={budget_balance[month]===null?0:budget_balance[month]}
-                  />
-                </div>
-        
-              </li>
-            );
-          })}
-        
-      </div>*/}
-      <div>
-        <>
+      <div className="w-100 p-4">
+        <div className="text-center">
+          <h1
+            style={{
+              fontFamily: "Times New Roman",
+              fontWeight: 600,
+              color: "black",
+              fontSize: "40px",
+            }}
+          >
+            Enter Budget
+          </h1>
+        </div>
+        <div className="d-flex pl-5 pr-5 flex-row justify-content-between">
+          <Expense
+            btn="Enter Expenses"
+            addBtn="Add Expense"
+            name="Add Expense"
+          />
           <button className="btn btn-primary" onClick={save}>
             Save
           </button>
-          <ToastContainer />
-        </>
+        </div>
       </div>
-    </div>
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow className='bg-dark'>
-            <TableCell align="center" className='text-light'><h5>Month</h5></TableCell>
-            <TableCell align="center" className='text-light'><h5>Income</h5></TableCell>
-            <TableCell align="center" className='text-light'><h5>Balance</h5></TableCell>
-            <TableCell align="center" className='text-light'><h5>Spends</h5></TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {/*<Row key={data.month} row={data} />*/}
-          {tableData.map((row) => (
-            <>
-             <>
-        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-          
-          <TableCell align="center">{row.month}</TableCell>
-          <TableCell align="center"><TextField sx={{border:0}} size="small"
-                      variant="outlined" 
-                      id="outlined-start-adornment"
-                      className="mr-4 ml-4 mb-4 border-0"
-                      name={row.month} type='number'
-                      value={budget_input[row.month]}
-                      onChange={set}
-                    /></TableCell>
-          {/*<TableCell align="right">{row.salary}</TableCell>*/}
-          <TableCell align="center">{row.balance===null?row.salary:row.balance}</TableCell>
-          <TableCell align="center">{row.balance===null?0:row.spends}</TableCell>
-          <TableCell>
-            <IconButton
-              aria-label="expand row"
-              size="small"
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                  History
-                </Typography>
-                <Table size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>S.No</TableCell>
-                      <TableCell>Category</TableCell>
-                      <TableCell align="right">Amount</TableCell>
-                      <TableCell align="right">Date</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {row.history.map((historyRow) => (
-                      <TableRow key={historyRow.date}>
-                        <TableCell component="th" scope="row">
-                          {historyRow.date}
+      <div className="d-flex justify-content-center">
+        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+          <TableContainer component={Paper} sx={{ maxHeight: 600 }}>
+            <Table stickyHeader aria-label="collapsible table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center">
+                    <h5>Month</h5>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <h5>Income</h5>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <h5>Balance</h5>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <h5>Spends</h5>
+                  </StyledTableCell>
+                  <StyledTableCell></StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {/*<Row key={data.month} row={data} />*/}
+                {tableData.map((row, key) => (
+                  <>
+                    <>
+                      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+                        <TableCell align="center" component="th" scope="row">
+                          {row.month}
                         </TableCell>
-                        <TableCell>{historyRow.customerId}</TableCell>
-                        <TableCell>{historyRow.amount}</TableCell>
-              
-                      
+                        <TableCell align="center">
+                          <TextField
+                            sx={{ border: 0 }}
+                            size="small"
+                            variant="outlined"
+                            id="outlined-start-adornment"
+                            className="mr-4 ml-4 mb-4 border-0"
+                            name={row.month}
+                            type="number"
+                            value={budget_input[row.month]}
+                            onChange={set}
+                          />
+                        </TableCell>
+                        {/*<TableCell align="right">{row.salary}</TableCell>*/}
+                        <TableCell align="center">
+                          {budget_input[row.month] - budget_balance[row.month]}
+                        </TableCell>
+                        <TableCell align="center">
+                          {budget_balance[row.month]}
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            aria-label="expand row"
+                            size="small"
+                            onClick={() =>
+                              open === undefined
+                                ? setOpen(key)
+                                : setOpen(undefined)
+                            }
+                          >
+                            {open === key ? (
+                              <KeyboardArrowUpIcon />
+                            ) : (
+                              <KeyboardArrowDownIcon />
+                            )}
+                          </IconButton>
+                        </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Box>
-            </Collapse>
-          </TableCell>
-        </TableRow>
-        </>
-            </>
-            
-
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                      <TableRow>
+                        <TableCell
+                          style={{ paddingBottom: 0, paddingTop: 0 }}
+                          colSpan={6}
+                        >
+                          <Collapse
+                            in={open === key}
+                            timeout="auto"
+                            unmountOnExit
+                          >
+                            <Box sx={{ margin: 1 }}>
+                              <Typography
+                                variant="h6"
+                                gutterBottom
+                                component="div"
+                              >
+                                Transactions
+                              </Typography>
+                              <Table size="small" aria-label="purchases">
+                                <TableHead>
+                                  <TableRow className="bg-primary">
+                                    <TableCell align="center">S.No</TableCell>
+                                    <TableCell align="center">
+                                      Category
+                                    </TableCell>
+                                    <TableCell align="center">Amount</TableCell>
+                                    <TableCell align="center">Date</TableCell>
+                                    <TableCell align="center">
+                                      Remarks
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {row.history.map((historyRow, key) => (
+                                    <TableRow key={historyRow.date}>
+                                      <TableCell
+                                        component="th"
+                                        scope="row"
+                                        align="center"
+                                      >
+                                        {key + 1}
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        {historyRow.category}
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        {historyRow.amount}
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        {historyRow.date_and_time}
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        {historyRow.remarks === 'undefined'
+                                          ? "-"
+                                          : historyRow.remarks}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </Box>
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  </>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </div>
+      <ToastContainer />
     </div>
   );
 };
