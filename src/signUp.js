@@ -24,16 +24,24 @@ const SignUp = () => {
   const [Perr, setPerr] = useState(false);
   const [Ptext, setPtext] = useState("");
 
+  const [CPerr, setCPerr] = useState(false);
+  const [CPtext, setCPtext] = useState("");
+
+
   const [signUpData, setSignUpData] = useState({});
   const navigate = useNavigate();
 
   //For password hide and show symbol
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+  const handleClickConfirmPassword = () => setConfirmPassword((show) => !show);
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
   const [showPassword, setShowPassword] = useState(false);
+
+  const [showConfirmPassword, setConfirmPassword] = useState(false);
 
   const set = (event) => {
     const name = event.target.name;
@@ -65,6 +73,15 @@ const SignUp = () => {
         setPtext("");
         setPerr(false);
       }
+    }else if(name==="confirmPassword"){
+      if(signUpData["password"]!==value){
+        setCPerr(true);
+        setCPtext("Passwords do not match");
+      }else{
+        setCPerr(false);
+        setCPtext("Passwords matched");
+      }
+
     }
     setSignUpData((vals) => ({ ...vals, [name]: value }));
   };
@@ -98,6 +115,9 @@ const SignUp = () => {
         "Password should be atleast 8 charcters and consist of one uppercase, lowercase, symbol and a number"
       );
       setPerr(true);
+    } else if(signUpData.password!==signUpData.confirmPassword){
+        setCPerr(true);
+        setCPtext("Passwords do not match");
     } else {
       console.log(signUpData);
       let options = {
@@ -197,7 +217,7 @@ const SignUp = () => {
           />
           <TextField
             variant="outlined"
-            className="mr-4 ml-4"
+            className="mr-4 ml-4 mb-4"
             label="Password"
             name="password"
             value={signUpData.password}
@@ -244,6 +264,40 @@ const SignUp = () => {
               } else {
                 setPerr(false);
                 setPtext("");
+              }
+            }}
+          />
+          <TextField
+            variant="outlined"
+            className="mr-4 ml-4"
+            label="Confirm Password"
+            name="confirmPassword"
+            value={signUpData.confirmPassword}
+            onChange={set} error={CPerr} helperText={CPtext}
+            required
+            type={showPassword ? "text" : "password"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickConfirmPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>{" "}
+                </InputAdornment>
+              ),
+            }}
+            onBlur={() => {
+              console.log(signUpData.confirmPassword,"Confirming");
+              if(signUpData.password!==signUpData.confirmPassword){
+                  setCPerr(true);
+                  setCPtext("Passwords do not match ");
+              }else{
+                setCPerr(false);
+                setCPtext("");
               }
             }}
           />

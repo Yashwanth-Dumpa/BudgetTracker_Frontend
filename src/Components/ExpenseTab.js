@@ -4,8 +4,6 @@ import Graphs from './Charts.js';
 import Dates from './Dates.js';
 import './expensebg.css'
 
-//import {useState, useEffect,createContext, useContext} from 'react';
-
 const Expense = ()=>{
     return(
         <div className="p-3">

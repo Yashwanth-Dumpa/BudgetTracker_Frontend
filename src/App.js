@@ -1,29 +1,20 @@
-//import logo from './logo.svg';
 import "./App.css";
 import * as React from "react";
-
-//import {useState, useEffect,createContext, useContext} from 'react';
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-//import Tab from "@material-ui/core/Tab";
-
 import CollapsibleTable from "./Components/muiTablesTrial";
 import Test from "./test.js";
 import Budget from "./Components/budgetTable.js";
 import Expense from "./Components/ExpenseTab.js";
-//import {useState} from 'react';
 import SignUp from "./signUp.js";
 import { Login } from "./login.js";
-
 import MainPage from "./mainPage.js";
-
 import UserDetailsProvider from "./Context.js";
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import Logout from "./logout";
 function App() {
   //const user = useContext(UserContext);
 
@@ -39,7 +30,7 @@ function App() {
         {...other}
       >
         {value === index && (
-          <Box sx={{ p: 3 }}>
+          <Box sx={{ p:1 }}>
             <Typography>{children}</Typography>
           </Box>
         )}
@@ -73,13 +64,15 @@ function App() {
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/test" element={<Test />} />
-        <Route path="/table" element={<CollapsibleTable/>} />
+        <Route path="/table" element={<CollapsibleTable />} />
         <Route
           path="/home"
           element={
             <UserDetailsProvider>
-              <Box sx={{ width: "100%" }}>
+              <Box sx={{ width: "100%" , maxHeight:10}}>
+                
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Typography><Logout/></Typography>
                   <Tabs
                     value={value}
                     onChange={handleChange}
@@ -91,9 +84,9 @@ function App() {
                   </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
-                  <UserDetailsProvider>
+              
                     <Expense />
-                  </UserDetailsProvider>
+                 
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                   <Budget />
