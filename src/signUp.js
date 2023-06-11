@@ -275,7 +275,7 @@ const SignUp = () => {
             value={signUpData.confirmPassword}
             onChange={set} error={CPerr} helperText={CPtext}
             required
-            type={showPassword ? "text" : "password"}
+            type={showConfirmPassword ? "text" : "password"}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
