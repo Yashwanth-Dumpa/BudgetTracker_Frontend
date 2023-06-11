@@ -29,7 +29,7 @@ function Expense(props) {
   const { setData } = useContext(userDetailsContext);
   const { setGraphData, setGraphData1 } = useContext(userDetailsContext);
 
-  const { budget_input, setBudget, budget_balance, setBalance } =
+  const { budget_input, setBudget, budget_balance, setBalance, budget_limit, setLimit} =
     useContext(userDetailsContext);
 
   const [inputs, setInput] = useState({});
@@ -83,13 +83,12 @@ function Expense(props) {
       setAErr(true);
       setAtext("Please enter valid amount");
       return false;
-    } else if (inputs.amount > budget_input[month] - budget_balance[month]) {
+    } else if (inputs.amount > budget_limit[month] - budget_balance[month]) {
       setAErr(true);
       setAtext(
-        "You have insufficient funds for the given month. Balance: Rs." +
-          (budget_input[month] - budget_balance[month])
+        "You are crossing your limit for " +month+". Income - Rs. "+budget_input[month]+" \n Limit - Rs. "+budget_limit[month]+
+          ". You can only add upto Rs."+(budget_limit[month] - budget_balance[month])+" or less."
       );
-
       toast.warning(
         "Remaining Balance for " +
           month +

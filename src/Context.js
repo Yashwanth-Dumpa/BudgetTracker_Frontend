@@ -13,13 +13,13 @@ const UserDetailsProvider = (props) => {
     const [inputs,setInput] = useState({}); //Dates Object
     const [budget_balance,setBalance] = useState({});
     const [budget_input,setBudget]  = useState({});
-    
+    const[budget_limit, setLimit] = useState({});
     const [graphData,setGraphData] = useState([["Expense", "Rupees"]]);
     const [graphData1,setGraphData1] = useState([["Expense", "Rupees"]]);
 
     return (
                 // this is the provider providing state
-        <userDetailsContext.Provider value={{budget_input,setBudget,data, setData,graphData,setGraphData,graphData1,setGraphData1,inputs,setInput,budget_balance,setBalance}}>
+        <userDetailsContext.Provider value={{budget_limit, setLimit,budget_input,setBudget,data, setData,graphData,setGraphData,graphData1,setGraphData1,inputs,setInput,budget_balance,setBalance}}>
             {props.children}
         </userDetailsContext.Provider>
     );

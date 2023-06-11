@@ -48,19 +48,52 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
-  const { budget_input, setBudget, budget_balance, setBalance } =
-    useContext(userDetailsContext);
+  const {
+    budget_input,
+    setBudget,
+    budget_balance,
+    setBalance,
+    budget_limit,
+    setLimit,
+  } = useContext(userDetailsContext);
+
+  const [Ierr, setIerr] = useState(false);
+  const [Itext, setItext] = useState("");
+
   const set = (event) => {
     const name = event.target.name;
     const value = event.target.value;
+    if (value <= parseInt(budget_limit[name])) {
+      setIerr(true);
+      setItext("Income cannot be lesser than limit");
+    } else {
+      setIerr(false);
+      setItext("");
+    }
     setBudget((vals) => ({ ...vals, [name]: value }));
+  };
+
+  const [Lerr, setLerr] = useState(false);
+  const [Ltext, setLtext] = useState("");
+
+  const setL = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    if (value > parseInt(budget_input[name])) {
+      setLerr(true);
+      setLtext("Limit cannot exceed your income.");
+    } else {
+      setLerr(false);
+      setLtext("");
+      setLimit((vals) => ({ ...vals, [name]: value }));
+    }
   };
 
   return (
     <React.Fragment>
       <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <StyledTableCell align="center" component="th" scope="row">
-          {row.month}
+          <strong>{row.month}</strong>
         </StyledTableCell>
         <StyledTableCell align="center">
           <TextField
@@ -71,8 +104,46 @@ function Row(props) {
             className="mr-4 ml-4 mb-4 border-0"
             name={row.month}
             type="number"
+            error={Ierr}
+            helperText={Itext}
             value={budget_input[row.month]}
             onChange={set}
+            onBlur={() => {
+              if (budget_input[row.month] < budget_balance[row.month]) {
+                setIerr(true);
+                setItext("Cannot make Income lesser than spends");
+              } else if (budget_limit[row.month] <= budget_input[row.month]) {
+                setIerr(false);
+                setItext("");
+              }
+            }}
+          />
+        </StyledTableCell>
+        <StyledTableCell align="center">
+          <TextField
+            sx={{ border: 0 }}
+            size="small"
+            variant="outlined"
+            id="outlined-start-adornment"
+            className="mr-4 ml-4 mb-4 border-0"
+            name={row.month}
+            type="number"
+            error={Lerr}
+            helperText={Ltext}
+            value={budget_limit[row.month]}
+            onChange={setL}
+            onBlur={() => {
+              if (parseInt(budget_limit[row.month]) < 0) {
+                setLerr(true);
+                setLtext("Please enter a valid Limit amount");
+              } else if (budget_limit[row.month] < budget_balance[row.month]) {
+                setLerr(true);
+                setLtext("Limit cannot be made lesser than Spent amount");
+              } else if (budget_limit[row.month] <= budget_input[row.month]) {
+                setLerr(false);
+                setLtext("");
+              }
+            }}
           />
         </StyledTableCell>
 
@@ -161,22 +232,24 @@ const Budget = () => {
   const [tableData, setTableData] = useState([]);
   const [monthlyBudget, setMonthlyBudget] = useState([]);
 
-  const { budget_input, setBudget, budget_balance, setBalance } =
-    useContext(userDetailsContext); //rendering in expensebutton.js when Add expense button is clicked.
-  function createData(month, salary, spends, monthly_data) {
+  const {
+    budget_limit,
+    setLimit,
+    budget_input,
+    setBudget,
+    budget_balance,
+    setBalance,
+  } = useContext(userDetailsContext); //rendering in expensebutton.js when Add expense button is clicked.
+  function createData(month, salary, limit, spends, monthly_data) {
     return {
       month,
       salary,
+      limit,
       spends,
       history: monthly_data, //Array of Objects
     };
   }
 
-  const set = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setBudget((vals) => ({ ...vals, [name]: value }));
-  };
   useEffect(() => {
     fetch("http://localhost:5000/" + user_id + "/getBudget")
       .then((response) => response.json())
@@ -186,6 +259,16 @@ const Budget = () => {
           budget_obj[Object.values(i)[0]] = Object.values(i)[1];
         }
         setBudget(budget_obj);
+      });
+
+    fetch("http://localhost:5000/" + user_id + "/getLimit")
+      .then((response) => response.json())
+      .then((jsonData) => {
+        let budget_obj = {};
+        for (let i of jsonData) {
+          budget_obj[Object.values(i)[0]] = Object.values(i)[1];
+        }
+        setLimit(budget_obj);
       });
 
     fetch("http://localhost:5000/" + user_id + "/getBudget/spends")
@@ -211,34 +294,72 @@ const Budget = () => {
           setMonthlyBudget(data);
           setTableData((vals) => [
             ...vals,
-            createData(i, budget_input[i], budget_balance[i], data),
+            createData(
+              i,
+              budget_input[i],
+              budget_limit[i],
+              budget_balance[i],
+              data
+            ),
           ]);
         });
     }
   }, []);
 
   const save = () => {
-    let options = {
-      mode: "cors",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(budget_input),
+    const check = () => {
+      for (let i of months) {
+        if (
+          parseInt(budget_limit[i]) < 0 ||
+          budget_limit[i] < budget_balance[i] ||
+          parseInt(budget_input[i]) < parseInt(budget_limit[i]) ||
+          Number.isNaN(parseInt(budget_input[i])) ||
+          Number.isNaN(parseInt(budget_limit[i])) ||
+          budget_input[i] < budget_balance[i]
+        ) {
+          return true;
+        }
+      }
     };
-    fetch(
-      "http://localhost:5000/" + user_id + "/addExpense-Credit",
-      options
-    ).then(() => {
-      fetch("http://localhost:5000/" + user_id + "/getBudget/spends")
-        .then((response) => response.json())
-        .then((data) => {
-          setBalance(data);
-        });
-      toast.success("Budget added Successfully", {
+
+    if (check()) {
+      toast.error("Error. Please check the Data you have entered", {
         position: toast.POSITION.TOP_RIGHT,
       });
-    });
+    } else {
+      let optionsInput = {
+        mode: "cors",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(budget_input),
+      };
+      fetch(
+        "http://localhost:5000/" + user_id + "/addExpense-Credit",
+        optionsInput
+      ).then(() => {
+        fetch("http://localhost:5000/" + user_id + "/getBudget/spends")
+          .then((response) => response.json())
+          .then((data) => {
+            setBalance(data);
+          });
+        toast.success("Budget added Successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+
+      let options = {
+        mode: "cors",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(budget_limit),
+      };
+
+      fetch("http://localhost:5000/" + user_id + "/addExpense-Limit", options);
+    }
   };
 
   return (
@@ -278,6 +399,9 @@ const Budget = () => {
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     <h5>Income</h5>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <h5>Limit</h5>
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     <h5>Balance</h5>

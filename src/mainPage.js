@@ -23,7 +23,7 @@ function MainPage() {
       <div className="heading-container w-25 d-flex flex-column p-5">
         <h1 className="text-center heading">Budget Tracker</h1>
         <p className="para"><em><strong>
-          The Budget Tracker empowers you to make informed financial decisions
+          The Budget Tracker application empowers you to make informed financial decisions
           by providing real-time insights into your expenses, ensuring they stay
           within their budget and manage your finances effectively.</strong></em>
         </p>
