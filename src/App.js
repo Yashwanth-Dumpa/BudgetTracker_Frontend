@@ -14,7 +14,7 @@ import { Login } from "./login.js";
 import MainPage from "./mainPage.js";
 import UserDetailsProvider from "./Context.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Logout from "./logout";
+import Header from "./logout";
 function App() {
   //const user = useContext(UserContext);
 
@@ -72,7 +72,7 @@ function App() {
               <Box sx={{ width: "100%" , maxHeight:10}}>
                 
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Typography><Logout/></Typography>
+                <Typography><Header/></Typography>
                   <Tabs
                     value={value}
                     onChange={handleChange}

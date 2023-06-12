@@ -2,8 +2,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import Cookies from "js-cookie";
 import { useEffect,useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Help from './help.js';
 
-const Logout = () => {
+const Header = () => {
   const navigate = useNavigate();
   const [userName,setuserName] = useState('');
    const user_id = Cookies.get('user_id');
@@ -22,7 +23,11 @@ useEffect(()=>{
   return (
     <div className="d-flex justify-content-between pt-2">
       <h5 className='ml-3'><em>Welcome {userName}</em></h5>
-      <label>
+      <div className='d-flex'>
+        <div className='mr-5 mt-1'>
+              <Help/>
+        </div>
+        <label>
         <button type='button'
           className="btn-danger btn mr-3"
           data-toggle="tooltip"
@@ -33,11 +38,14 @@ useEffect(()=>{
             navigate("/", { replace: true });
           }}
         >
+
           <LogoutIcon />{" "}
         </button>
-      </label>
+        
+      </label></div>
+      
     </div>
   );
 };
 
-export default Logout;
+export default Header;

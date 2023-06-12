@@ -1,4 +1,5 @@
 import "./mainPage.css";
+import CopyrightIcon from '@mui/icons-material/Copyright';
 
 import { useNavigate } from "react-router-dom";
 function MainPage() {
@@ -27,9 +28,7 @@ function MainPage() {
           by providing real-time insights into your expenses, ensuring they stay
           within their budget and manage your finances effectively.</strong></em>
         </p>
-       {/* <p>The application is designed to help users track and manage their personal expenses effectively. 
-          It allows users to set a monthly budget based on their income and provides detailed insights into their 
-          expenditures.</p>*/}
+        <p className='d-flex flex-row mt-2'><CopyrightIcon color='action' fontSize="medium"/>Yashwanth Dumpa, Inc.</p>
       </div>
     </div>
   );
